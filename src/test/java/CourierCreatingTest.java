@@ -13,11 +13,15 @@ import org.apache.http.HttpStatus;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.hamcrest.CoreMatchers.equalTo;
 
+import net.datafaker.Faker;
+
 
 public class CourierCreatingTest extends CourierAPI {
-    CourierCreating courierFull = new CourierCreating("Timofeev", "0123", "Tim");
-    CourierCreating courierWithoutLogin = new CourierCreating("", "0123");
-    CourierCreating courierWithoutPassword = new CourierCreating("Timofeev", "");
+
+    Faker faker = new Faker();
+    CourierCreating courierFull = new CourierCreating(faker.name().lastName(), faker.internet().password(), faker.name().firstName());
+    CourierCreating courierWithoutLogin = new CourierCreating("", faker.internet().password());
+    CourierCreating courierWithoutPassword = new CourierCreating(faker.name().lastName(), "");
     CourierAPI courierAPI = new CourierAPI();
 
 
