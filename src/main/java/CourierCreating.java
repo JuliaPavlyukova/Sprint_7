@@ -41,7 +41,6 @@ public class CourierCreating {
     }
 
     public int getId() {
-        System.out.println("getid" + id);
         return id;
     }
 
