@@ -22,19 +22,18 @@ public class OrderAPI {
     public Response orderCreate(CreateOrder orderCreateRequest) {
         return requestSpecification()
                 .body(orderCreateRequest)
-                .log().all()
                 .post(CREATE_ORDER);
     }
 
     @Step("Получение списка ранее созданного заказа по track {track}")
     public Response checkOrderCreate(Integer track) {
-        return  requestSpecification().get(GET_ORDER + track);
+        return requestSpecification().get(GET_ORDER + track);
 
     }
 
     @Step("Получение списка заказа")
     public Response orderGetList() {
-        return  requestSpecification().get(CREATE_ORDER);
+        return requestSpecification().get(CREATE_ORDER);
     }
 
 }

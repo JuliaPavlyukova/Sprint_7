@@ -30,6 +30,7 @@ public class CourierLoginTest {
         courierAPI.createNewCourier(courierFull);
     }
 
+
     @Test
     @DisplayName("Test. Проверка успешной авторизации и наличия id в ответе")
     @Description("Курьер может авторизоваться передав обязательные для авторизации поля")
@@ -37,9 +38,7 @@ public class CourierLoginTest {
         Response response = courierAPI.loginCourier(courierFull);
         courierSteps.checkId(response);
         courierSteps.checkResponseCode200(response);
-
     }
-
 
 
     @Test
@@ -47,10 +46,9 @@ public class CourierLoginTest {
     @Description("Cистема вернёт ошибку, если неправильно указать логин или пароль")
     public void loginWithInvalidLogin() {
         Response response = courierAPI.loginCourier(courierWithInvalidLogin);
-        courierSteps.checkErrorMessageWithInvalidLogin(response);
+        courierSteps.checkErrorMessageWithInvalidField(response);
         courierSteps.checkCode404WithInvalidAuthoriz(response);
     }
-
 
 
     @Test
@@ -58,27 +56,27 @@ public class CourierLoginTest {
     @Description("Система вернёт ошибку, если неправильно указать логин или пароль")
     public void loginWithInvalidPassword() {
         Response response = courierAPI.loginCourier(courierWithInvalidPassword);
-        courierSteps.checkErrorMessageWithInvalidPassword(response);
+        courierSteps.checkErrorMessageWithInvalidField(response);
         courierSteps.checkCode404WithInvalidAuthoriz(response);
-
-
     }
+
 
     @Test
     @DisplayName("Test. Проверка появления ошибки при попытке авторизации без поля логин")
     @Description("Если какого-то поля нет, запрос возвращает ошибку. При запросе на ручку COURIER_LOGIN должны быть 2 обязательных поля: логин и пароль")
     public void courierWithoutLogin() {
         Response responseWithoutLog = courierAPI.loginCourier(courierWithoutLogin);
-        courierSteps.checkErrorMessageWithEmptyLogin(responseWithoutLog);
-        courierSteps.checkCode400WithInvalidAuthoriz(responseWithoutLog);
+        courierSteps.checkErrorMessageWithEmptyField(responseWithoutLog);
+        courierSteps.checkCode400WithEmptyAuthoriz(responseWithoutLog);
     }
+
 
     @Test
     @DisplayName("Test. Проверка появления ошибки при попытке авторизации без поля пароль")
     @Description("Если какого-то поля нет, запрос возвращает ошибку. В запросе должны быть 2 обязательных поля: логин и пароль")
     public void courierWithoutPassword() {
         Response responseWithoutPassword = courierAPI.loginCourier(courierWithoutPassword);
-        courierSteps.checkErrorMessageWithEmptyPassword(responseWithoutPassword);
-        courierSteps.checkCode400WithInvalidAuthoriz(responseWithoutPassword);
+        courierSteps.checkErrorMessageWithEmptyField(responseWithoutPassword);
+        courierSteps.checkCode400WithEmptyAuthoriz(responseWithoutPassword);
     }
 }

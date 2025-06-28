@@ -5,7 +5,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.Before;
 import org.junit.Test;
-import steps.CourierSteps;
 import steps.OrderSteps;
 
 import static constants.Constants.BASE_URL;
@@ -27,6 +26,6 @@ public class OrderGetListTest {
     public void getOrderList() {
         Response response = orderAPI.orderGetList();
         orderSteps.checkBodyFromListOrder(response);
-        orderSteps.checkCodeFromListOrder(response);
+        orderSteps.check200StatusOrder(response);
     }
 }

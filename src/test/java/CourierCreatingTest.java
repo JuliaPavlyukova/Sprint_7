@@ -55,9 +55,8 @@ public class CourierCreatingTest extends CourierAPI {
     @Description("Создание курьера с указанием только пароля")
     public void createCourierWithoutLogin() {
         Response responseWithoutLogin = createNewCourier(courierWithoutLogin);
-        courierSteps.checkErrorMessageWithEnptyField(responseWithoutLogin);
-        courierSteps.checkCode400WithInvalidAuthoriz(responseWithoutLogin);
-
+        courierSteps.checkErrorMessageCreateWithEmptyField(responseWithoutLogin);
+        courierSteps.checkCode400WithEmptyAuthoriz(responseWithoutLogin);
     }
 
 
@@ -66,9 +65,8 @@ public class CourierCreatingTest extends CourierAPI {
     @Description("Проверка ситуации, если одного из полей нет, запрос возвращает ошибку;")
     public void createCourierWithoutPassword() {
         Response responseWithoutPassword = createNewCourier(courierWithoutPassword);
-        courierSteps.checkErrorMessageWithEnptyField(responseWithoutPassword);
-        courierSteps.checkCode400WithInvalidAuthoriz(responseWithoutPassword);
-
+        courierSteps.checkErrorMessageCreateWithEmptyField(responseWithoutPassword);
+        courierSteps.checkCode400WithEmptyAuthoriz(responseWithoutPassword);
     }
 
 

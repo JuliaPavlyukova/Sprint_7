@@ -36,6 +36,7 @@ public class OrderCreateTest {
         }
     }
 
+
     @Parameterized.Parameters(name = "Набор цветов {index}")
     public static Object[][] dataGen() {
         return new Object[][]{
@@ -45,6 +46,7 @@ public class OrderCreateTest {
                 {new String[]{}}
         };
     }
+
 
     @Test
     @DisplayName("Test. Проверка  созданного заказа")
@@ -62,10 +64,9 @@ public class OrderCreateTest {
     @Description("Создание заказа с самокатами разных цветов через параметризованный тест")
     public void checkStatusCodeFromOldOrder() {
         Response response = orderAPI.orderCreate(orderCreateRequest);
-        System.out.println(" track ****" + track);
         track = response.body().jsonPath().getInt("track");
+        System.out.println(track + " track");
         Response response2 = orderAPI.checkOrderCreate(track);
-        orderSteps.checkTrackFromNewOrder(response2);
-        orderSteps.orderCheck200StatusOldOrder(response2);
+        orderSteps.check200StatusOrder(response2);
     }
 }
