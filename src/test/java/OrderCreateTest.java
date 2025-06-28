@@ -1,16 +1,20 @@
+import api.OrderAPI;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.response.ValidatableResponse;
+import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import pojo.CreateOrder;
+import steps.OrderSteps;
+
 
 @RunWith(Parameterized.class)
 public class OrderCreateTest {
     private Integer track; // Поле для хранения идентификатора заказа
-    private OrderListParam orderSteps;
+    private OrderSteps orderSteps;
     private String[] color;
 
     public OrderCreateTest(String[] color) {
@@ -18,10 +22,11 @@ public class OrderCreateTest {
     }
 
     CreateOrder orderCreateRequest = new CreateOrder(color);
+    OrderAPI orderAPI = new OrderAPI();
 
     @Before
     public void setUp() {
-        orderSteps = new OrderListParam();
+        orderSteps = new OrderSteps();
     }
 
     @After
@@ -42,19 +47,25 @@ public class OrderCreateTest {
     }
 
     @Test
-    @DisplayName("Test. Создание заказа")
+    @DisplayName("Test. Проверка  созданного заказа")
     @Description("Создание заказа с самокатами разных цветов через параметризованный тест")
-    public void orderCreate() {
-        System.out.println("create order");
-        ValidatableResponse response = orderSteps.orderCreate(orderCreateRequest);
-        track = response.extract().body().jsonPath().getInt("track");
+    public void orderNewCreate() {
+        Response response = orderAPI.orderCreate(orderCreateRequest);
+        track = response.body().jsonPath().getInt("track");
+        orderSteps.checkTrackFromNewOrder(response);
+        orderSteps.orderCheckStatusCode201(response);
     }
 
+
     @Test
-    public void checkOrder() {
-        System.out.println("check order");
-        ValidatableResponse response = orderSteps.orderCreate(orderCreateRequest);
-        track = response.extract().body().jsonPath().getInt("track");
-        orderSteps.checkOrderCreate(track);
+    @DisplayName("Test. Проверка статуса кода у ранее созданного заказа")
+    @Description("Создание заказа с самокатами разных цветов через параметризованный тест")
+    public void checkStatusCodeFromOldOrder() {
+        Response response = orderAPI.orderCreate(orderCreateRequest);
+        System.out.println(" track ****" + track);
+        track = response.body().jsonPath().getInt("track");
+        Response response2 = orderAPI.checkOrderCreate(track);
+        orderSteps.checkTrackFromNewOrder(response2);
+        orderSteps.orderCheck200StatusOldOrder(response2);
     }
 }

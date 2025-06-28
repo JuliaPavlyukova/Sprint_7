@@ -1,3 +1,4 @@
+import api.CourierAPI;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
@@ -8,12 +9,9 @@ import org.junit.Test;
 
 import static constants.Constants.*;
 
-import org.apache.http.HttpStatus;
-
-import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
-import static org.hamcrest.CoreMatchers.equalTo;
-
 import net.datafaker.Faker;
+import pojo.CourierCreating;
+import steps.CourierSteps;
 
 
 public class CourierCreatingTest extends CourierAPI {
@@ -22,7 +20,7 @@ public class CourierCreatingTest extends CourierAPI {
     CourierCreating courierFull = new CourierCreating(faker.name().lastName(), faker.internet().password(), faker.name().firstName());
     CourierCreating courierWithoutLogin = new CourierCreating("", faker.internet().password());
     CourierCreating courierWithoutPassword = new CourierCreating(faker.name().lastName(), "");
-    CourierAPI courierAPI = new CourierAPI();
+    CourierSteps courierSteps = new CourierSteps();
 
 
     @Before
@@ -36,8 +34,8 @@ public class CourierCreatingTest extends CourierAPI {
     @Description("При успешном создании курьеры тело ответа ok: true;")
     public void createCourier() {
         Response response = createNewCourier(courierFull);
-        checkResponseCode201(response, HttpStatus.SC_CREATED);
-        checkResponseCodeOk(response);
+        courierSteps.checkResponseCodeOk(response);
+        courierSteps.checkResponseCode201(response);
     }
 
 
@@ -47,19 +45,19 @@ public class CourierCreatingTest extends CourierAPI {
     public void duplicateCourier() {
         createNewCourier(courierFull);
         Response response = createNewCourier(courierFull);
-        checkResponseCode409(response);
-        checkErrorMessage(response);
+        courierSteps.checkErrorMessage(response);
+        courierSteps.checkResponseCode409(response);
     }
 
 
     @Test
-    @DisplayName("Test. Создание курьера без логина")
-    @Description("Создание курьера с указанием только имени и пароля")
+    @DisplayName("Test. Появление ошибки при создании курьера без логина")
+    @Description("Создание курьера с указанием только пароля")
     public void createCourierWithoutLogin() {
         Response responseWithoutLogin = createNewCourier(courierWithoutLogin);
-        responseWithoutLogin.then().assertThat().statusCode(SC_BAD_REQUEST)
-                .and()
-                .assertThat().body("message", equalTo("Недостаточно данных для создания учетной записи"));
+        courierSteps.checkErrorMessageWithEnptyField(responseWithoutLogin);
+        courierSteps.checkCode400WithInvalidAuthoriz(responseWithoutLogin);
+
     }
 
 
@@ -68,10 +66,11 @@ public class CourierCreatingTest extends CourierAPI {
     @Description("Проверка ситуации, если одного из полей нет, запрос возвращает ошибку;")
     public void createCourierWithoutPassword() {
         Response responseWithoutPassword = createNewCourier(courierWithoutPassword);
-        responseWithoutPassword.then().assertThat().statusCode(SC_BAD_REQUEST)
-                .and()
-                .assertThat().body("message", equalTo("Недостаточно данных для создания учетной записи"));
+        courierSteps.checkErrorMessageWithEnptyField(responseWithoutPassword);
+        courierSteps.checkCode400WithInvalidAuthoriz(responseWithoutPassword);
+
     }
+
 
     @After
     public void deleteCourier() {

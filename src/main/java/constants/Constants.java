@@ -8,6 +8,6 @@ public class Constants {
     public static final String CREATE_ORDER = "/api/v1/orders";
     public static final String DELETE_COURIER = "/api/v1/courier/";
     public static final String GET_ORDER = "/api/v1/orders/track?t=";
-    public static final String DELETE_ORDER = "/api/v1/orders/";
+    public static final String CANCEL_ORDER = "api/v1/orders/cancel?track=";
 
 }

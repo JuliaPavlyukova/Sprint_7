@@ -1,3 +1,4 @@
+import api.CourierAPI;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
@@ -8,6 +9,8 @@ import org.junit.Test;
 import static constants.Constants.*;
 
 import net.datafaker.Faker;
+import pojo.CourierCreating;
+import steps.CourierSteps;
 
 public class CourierLoginTest {
 
@@ -18,6 +21,7 @@ public class CourierLoginTest {
     CourierCreating courierWithoutLogin = new CourierCreating("", faker.internet().password());
     CourierCreating courierWithoutPassword = new CourierCreating(faker.name().lastName(), "");
     CourierAPI courierAPI = new CourierAPI();
+    CourierSteps courierSteps = new CourierSteps();
 
 
     @Before
@@ -31,25 +35,33 @@ public class CourierLoginTest {
     @Description("Курьер может авторизоваться передав обязательные для авторизации поля")
     public void loginNewCourier() {
         Response response = courierAPI.loginCourier(courierFull);
-        courierAPI.checkId(response);
+        courierSteps.checkId(response);
+        courierSteps.checkResponseCode200(response);
+
     }
+
+
 
     @Test
     @DisplayName("Test. Проверка появления ошибки при попытке авторизации c несуществующим логином")
     @Description("Cистема вернёт ошибку, если неправильно указать логин или пароль")
     public void loginWithInvalidLogin() {
         Response response = courierAPI.loginCourier(courierWithInvalidLogin);
-        courierAPI.checkErrorMessageWithInvalidLogin(response);
-        courierAPI.checkResponseCodeWithInvalidLogin(response);
-
+        courierSteps.checkErrorMessageWithInvalidLogin(response);
+        courierSteps.checkCode404WithInvalidAuthoriz(response);
     }
+
+
 
     @Test
     @DisplayName("Test. Проверка появления ошибки при попытке авторизации c несуществующим паролем")
     @Description("Система вернёт ошибку, если неправильно указать логин или пароль")
     public void loginWithInvalidPassword() {
         Response response = courierAPI.loginCourier(courierWithInvalidPassword);
-        courierAPI.checkErrorMessageWithInvalidPassword(response);
+        courierSteps.checkErrorMessageWithInvalidPassword(response);
+        courierSteps.checkCode404WithInvalidAuthoriz(response);
+
+
     }
 
     @Test
@@ -57,7 +69,8 @@ public class CourierLoginTest {
     @Description("Если какого-то поля нет, запрос возвращает ошибку. При запросе на ручку COURIER_LOGIN должны быть 2 обязательных поля: логин и пароль")
     public void courierWithoutLogin() {
         Response responseWithoutLog = courierAPI.loginCourier(courierWithoutLogin);
-        courierAPI.checkErrorMessageWithEmptyLogin(responseWithoutLog);
+        courierSteps.checkErrorMessageWithEmptyLogin(responseWithoutLog);
+        courierSteps.checkCode400WithInvalidAuthoriz(responseWithoutLog);
     }
 
     @Test
@@ -65,6 +78,7 @@ public class CourierLoginTest {
     @Description("Если какого-то поля нет, запрос возвращает ошибку. В запросе должны быть 2 обязательных поля: логин и пароль")
     public void courierWithoutPassword() {
         Response responseWithoutPassword = courierAPI.loginCourier(courierWithoutPassword);
-        courierAPI.checkErrorMessageWithEmptyPassword(responseWithoutPassword);
+        courierSteps.checkErrorMessageWithEmptyPassword(responseWithoutPassword);
+        courierSteps.checkCode400WithInvalidAuthoriz(responseWithoutPassword);
     }
 }

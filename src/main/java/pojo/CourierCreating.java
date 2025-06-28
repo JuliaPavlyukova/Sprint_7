@@ -1,3 +1,5 @@
+package pojo;
+
 public class CourierCreating {
     private String login;
     private String password;

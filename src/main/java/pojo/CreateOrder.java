@@ -1,3 +1,5 @@
+package pojo;
+
 public class CreateOrder {
     private String firstName;
     private String lastName;
